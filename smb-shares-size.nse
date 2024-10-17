@@ -12,7 +12,7 @@ Return free and total size in octets of each SMB shares
 ---
 -- @args See the documentation for the smbauth library.
 --
--- @usage nmap -p137-139,445 --script smb-shares-size.nse --script-args-file smb-shares-size.ini <host>
+-- @usage nmap -p137-139,445 --script smb-shares-size.nse --script-args-file smb-authentication.ini <host>
 --
 -- @output
 -- Host script results:
