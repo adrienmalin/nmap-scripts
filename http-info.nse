@@ -50,14 +50,14 @@ action = function(host, port)
   stdnse.debug1("Try to download %s", uri)
   local answer = http.get_url(uri, {})
 
-  local info = {status=answer.status, ["status-line"]=answer["status-line"]}
+  local output = {status=answer.status, ["status-line"]=answer["status-line"]}
 
   if (answer and answer.status == 200) then
     stdnse.debug1("[SUCCESS] Load page %s", uri)
     -- Taken from http-title.nse by Diman Todorov
     local title = string.match(answer.body, "<[Tt][Ii][Tt][Ll][Ee][^>]*>([^<]*)</[Tt][Ii][Tt][Ll][Ee]>")
     if (title) then
-      info.title = title
+      output.title = title
     end
     stdnse.debug1("[INFO] Try favicon %s", favicon_relative_uri)
     favicon_relative_uri = parseIcon(answer.body) or "favicon.ico"
@@ -70,12 +70,12 @@ action = function(host, port)
 
   if (favicon and favicon.status == 200) then
     stdnse.debug1("[SUCCESS] Load favicon %s", favicon_absolute_uri)
-    info.favicon = favicon_absolute_uri
+    output.favicon = favicon_absolute_uri
   else
     stdnse.debug1("[ERROR] Can't load favicon %s", favicon_absolute_uri)
   end
   
-  return info
+  return output
 end
 
 --- function taken from http_favicon.nse by Vlatko Kosturjak
