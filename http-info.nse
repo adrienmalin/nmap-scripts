@@ -60,7 +60,7 @@ action = function(host, port)
       output.title = title
     end
     stdnse.debug1("[INFO] Try favicon %s", favicon_relative_uri)
-    favicon_relative_uri = parseIcon(answer.body) or "favicon.ico"
+    favicon_relative_uri = parseIcon(answer.body) or favicon_relative_uri
   else
     stdnse.debug1("[ERROR] Can't load page %s", uri)
   end

@@ -22,17 +22,13 @@ categories = {"discovery", "intrusive"}
 author     = "Adrien Malingrey"
 license    = "Same as Nmap--See https://nmap.org/book/man-legal.html"
 
-hostrule = function(host)
-  return smb.get_port(host) ~= nil
-end
-
 portrule = shortport.service({"microsoft-ds", "netbios-ssn", "smb"})
 
 local stdnse    = require "stdnse"
 local smb       = require "smb"
 local smb2      = require "smb2"
 local msrpc     = require "msrpc"
-local bin       = require "bin"
+local string    = require "string"
 
 action = function(host)
   local status, shares, extra
@@ -80,7 +76,7 @@ function get_share_info(host, share)
   
   stdnse.debug1("SMB: Getting information for share: %s", path)
   
-  local status, err = send_transaction2(smbstate, TRANS2_QUERY_FS_INFORMATION, bin.pack("<S", SMB_QUERY_FS_SIZE_INFO))
+  local status, err = send_transaction2(smbstate, TRANS2_QUERY_FS_INFORMATION, string.pack("<S", SMB_QUERY_FS_SIZE_INFO))
   if ( not(status) ) then
     status, err      = smb.stop(smbstate)
     return false, "Failed to send data to server: send_transaction2"
