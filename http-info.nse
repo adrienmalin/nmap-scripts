@@ -20,12 +20,12 @@ Return status, title and favicon URL of a webpage
 ---
 
 categories = {"discovery", "intrusive"}
-author = "Adrien Malingrey"
-license = "Same as Nmap--See https://nmap.org/book/man-legal.html"
+author     = "Adrien Malingrey"
+license    = "Same as Nmap--See https://nmap.org/book/man-legal.html"
 
 portrule = shortport.service({"http", "https", "ssl"})
 
-local http = require "http"
+local http   = require "http"
 local stdnse = require "stdnse"
 
 action = function(host, port)

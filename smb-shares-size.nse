@@ -1,8 +1,3 @@
-local stdnse    = require "stdnse"
-local smb       = require "smb"
-local smb2      = require "smb2"
-local msrpc     = require "msrpc"
-local bin       = require "bin"
 local shortport = require "shortport"
 
 description = [[
@@ -24,11 +19,20 @@ Return free and total size in octets of each SMB shares
 ---
 
 categories = {"discovery", "intrusive"}
-author = "Adrien Malingrey"
-license = "Same as Nmap--See https://nmap.org/book/man-legal.html"
+author     = "Adrien Malingrey"
+license    = "Same as Nmap--See https://nmap.org/book/man-legal.html"
+
+hostrule = function(host)
+  return smb.get_port(host) ~= nil
+end
 
 portrule = shortport.service({"microsoft-ds", "netbios-ssn", "smb"})
 
+local stdnse    = require "stdnse"
+local smb       = require "smb"
+local smb2      = require "smb2"
+local msrpc     = require "msrpc"
+local bin       = require "bin"
 
 action = function(host)
   local status, shares, extra
