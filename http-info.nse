@@ -32,28 +32,28 @@ action = function(host, port)
   local scheme = ""
   local hostaddress = (host.name ~= '' and host.name) or host.ip
   local path = "/"
-  local uri
   local favicon_relative_uri = "/favicon.ico"
   local favicon
 
+  stdnse.debug1("port", port.service)
   if (port.service == "ssl") then
     scheme = "https"
   else
     scheme = port.service
   end
+  stdnse.debug1("scheme", scheme)
 
   if(stdnse.get_script_args('http-get.path')) then
     path = stdnse.get_script_args('http-info.path')
   end
 
-  uri = scheme.."://"..hostaddress..":"..port.number..path
-  stdnse.debug1("Try to download %s", uri)
-  local answer = http.get_url(uri, {})
+  stdnse.debug1("Try to download %s", path)
+  local answer = http.get(hostaddress, port, path)
 
   local output = {status=answer.status, ["status-line"]=answer["status-line"]}
 
   if (answer and answer.status == 200) then
-    stdnse.debug1("[SUCCESS] Load page %s", uri)
+    stdnse.debug1("[SUCCESS] Load page %s", path)
     -- Taken from http-title.nse by Diman Todorov
     local title = string.match(answer.body, "<[Tt][Ii][Tt][Ll][Ee][^>]*>([^<]*)</[Tt][Ii][Tt][Ll][Ee]>")
     if (title) then
@@ -62,17 +62,16 @@ action = function(host, port)
     stdnse.debug1("[INFO] Try favicon %s", favicon_relative_uri)
     favicon_relative_uri = parseIcon(answer.body) or favicon_relative_uri
   else
-    stdnse.debug1("[ERROR] Can't load page %s", uri)
+    stdnse.debug1("[ERROR] Can't load page %s", path)
   end
   
-  favicon_absolute_uri = scheme.."://"..hostaddress..":"..port.number..favicon_relative_uri
-  favicon = http.get_url(favicon_absolute_uri, {})
+  favicon = http.get(hostaddress, port, favicon_relative_uri)
 
   if (favicon and favicon.status == 200) then
-    stdnse.debug1("[SUCCESS] Load favicon %s", favicon_absolute_uri)
-    output.favicon = favicon_absolute_uri
+    stdnse.debug1("[SUCCESS] Load favicon %s", favicon_relative_uri)
+    output.favicon = favicon_relative_uri
   else
-    stdnse.debug1("[ERROR] Can't load favicon %s", favicon_absolute_uri)
+    stdnse.debug1("[ERROR] Can't load favicon %s", favicon_relative_uri)
   end
   
   return output
